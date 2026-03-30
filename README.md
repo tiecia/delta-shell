@@ -1,5 +1,7 @@
 # Delta Shell
 
+A fork of: https://github.com/Hezaki/delta-shell
+
 A desktop shell based on [Ags](https://github.com/Aylur/ags). Currently supports Hyprland and Niri.
 ![image](https://sinomor.github.io/delta-shell-docs/assets/1.Dk8DoK2r.png)
 ![image](https://sinomor.github.io/delta-shell-docs/assets/2.RA-2ANnk.png)
