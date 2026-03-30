@@ -1,6 +1,6 @@
 node_modules/
 @girs/
 ./results/*
-./result/*
+result
 package-lock.json
 .aider*
