@@ -19,6 +19,13 @@ export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
 
    const conf = config.bar.modules.workspaces;
    const workspaces = compositor.monitorWorkspaces(gdkmonitor);
+   const displayWorkspaceId = workspaces((list) => {
+      const displayIds = new Map<number, number>();
+      list.forEach((workspace, index) => {
+         displayIds.set(compositor.workspaceId(workspace), index + 1);
+      });
+      return displayIds;
+   });
    const focusedWorkspace = compositor.focusedWorkspace();
    const focusedWindow = compositor.focusedWindow();
 
@@ -54,15 +61,15 @@ export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
          config.bar.position === "top"
             ? Gtk.Align.START
             : config.bar.position === "bottom"
-              ? Gtk.Align.END
-              : Gtk.Align.CENTER;
+               ? Gtk.Align.END
+               : Gtk.Align.CENTER;
 
       const indicatorHalign =
          config.bar.position === "left"
             ? Gtk.Align.START
             : config.bar.position === "right"
-              ? Gtk.Align.END
-              : Gtk.Align.CENTER;
+               ? Gtk.Align.END
+               : Gtk.Align.CENTER;
 
       return (
          <overlay hexpand={isVertical} cssClasses={classes}>
@@ -124,7 +131,7 @@ export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
                windowCount() > 0 ||
                (focused &&
                   compositor.workspaceId(focused) ===
-                     compositor.workspaceId(ws))
+                  compositor.workspaceId(ws))
             );
          }
          return true;
@@ -168,7 +175,10 @@ export function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
             data={{
                id: (
                   <label
-                     label={compositor.workspaceId(ws).toString()}
+                     label={displayWorkspaceId((ids) => {
+                        const realId = compositor.workspaceId(ws);
+                        return (ids.get(realId) ?? realId).toString();
+                     })}
                      hexpand={isVertical}
                   />
                ),

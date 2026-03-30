@@ -91,7 +91,9 @@ const variables = () => [
    $("shadow", `${theme.shadow}`),
 ];
 
-const style_path = `${DATADIR ?? SRC}/src/styles`;
+const dataRoot =
+   typeof DATADIR !== "undefined" && DATADIR !== null ? DATADIR : SRC;
+const style_path = `${dataRoot}/src/styles`;
 const style_files = [
    `${style_path}/_extra.scss`,
    `${style_path}/bar.scss`,

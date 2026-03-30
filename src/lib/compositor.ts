@@ -13,6 +13,37 @@ const hyprland =
 
 const niri = compositorName === "niri" ? AstalNiri.get_default() : null;
 
+function isSameHyprlandMonitor(wsMonitor: any, gdkmonitor: Gdk.Monitor): boolean {
+   if (!wsMonitor) return false;
+
+   // Prefer connector-style identifiers (DP-1, HDMI-A-1, etc.) because
+   // model names are often identical across multiple displays.
+   const gdkConnector = (gdkmonitor as any).connector;
+   if (gdkConnector) {
+      const wsConnector = wsMonitor.name ?? wsMonitor.connector;
+      if (wsConnector) return wsConnector === gdkConnector;
+   }
+
+   const gdkSerial = (gdkmonitor as any).serial;
+   if (gdkSerial && wsMonitor.serial) return wsMonitor.serial === gdkSerial;
+
+   const gdkManufacturer = (gdkmonitor as any).manufacturer;
+   const gdkModel = (gdkmonitor as any).model;
+   const wsManufacturer = wsMonitor.make ?? wsMonitor.manufacturer;
+   const wsModel = wsMonitor.model;
+
+   if (gdkManufacturer && wsManufacturer && gdkModel && wsModel) {
+      return wsManufacturer === gdkManufacturer && wsModel === gdkModel;
+   }
+
+   return wsModel === gdkModel;
+}
+
+function isNormalHyprlandWorkspace(ws: any): boolean {
+   const id = Number(ws?.id);
+   return Number.isFinite(id) && id > 0;
+}
+
 export const compositor = {
    name() {
       return compositorName;
@@ -26,7 +57,9 @@ export const compositor = {
    workspaces(): Accessor<any[]> {
       if (hyprland) {
          return createBinding(hyprland, "workspaces").as((ws) =>
-            ws.sort((a, b) => a.id - b.id),
+            ws
+               .filter((workspace) => isNormalHyprlandWorkspace(workspace))
+               .sort((a, b) => a.id - b.id),
          );
       }
       if (niri) {
@@ -38,10 +71,10 @@ export const compositor = {
    },
    monitorWorkspaces(gdkmonitor: Gdk.Monitor): Accessor<any[]> {
       if (hyprland) {
-         const model = gdkmonitor.model;
          return createBinding(hyprland, "workspaces").as((workspaces) =>
             workspaces
-               .filter((ws) => ws.monitor?.model === model)
+               .filter((workspace) => isNormalHyprlandWorkspace(workspace))
+               .filter((ws) => isSameHyprlandMonitor(ws.monitor, gdkmonitor))
                .sort((a, b) => a.id - b.id),
          );
       }

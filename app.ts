@@ -4,8 +4,11 @@ import request from "./request";
 import { config } from "./options";
 import { windows } from "./windows";
 
+const dataRoot =
+   typeof DATADIR !== "undefined" && DATADIR !== null ? DATADIR : SRC;
+
 app.start({
-   icons: `${DATADIR ?? SRC}/assets/icons`,
+   icons: `${dataRoot}/assets/icons`,
    instanceName: "delta-shell",
    main() {
       windows();

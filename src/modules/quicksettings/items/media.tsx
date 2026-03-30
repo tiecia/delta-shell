@@ -10,6 +10,8 @@ import AstalApps from "gi://AstalApps?version=0.1";
 import { getAppInfo, lengthStr } from "@/src/lib/utils";
 const mpris = AstalMpris.get_default();
 let carousel: Adw.Carousel;
+const dataRoot =
+   typeof DATADIR !== "undefined" && DATADIR !== null ? DATADIR : SRC;
 
 function MediaPlayer({ player }: { player: AstalMpris.Player }) {
    const title = createBinding(player, "title").as((t) => t || "Unknown Track");
@@ -17,7 +19,7 @@ function MediaPlayer({ player }: { player: AstalMpris.Player }) {
       (a) => a || "Unknown Artist",
    );
    const coverArt = createBinding(player, "coverArt").as((c) =>
-      Gio.file_new_for_path(c || `${DATADIR ?? SRC}/assets/defsong.jpg`),
+      Gio.file_new_for_path(c || `${dataRoot}/assets/defsong.jpg`),
    );
    const playIcon = createBinding(player, "playbackStatus").as((s) =>
       s === AstalMpris.PlaybackStatus.PLAYING

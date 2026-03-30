@@ -10,6 +10,7 @@ import { timeout } from "ags/time";
 import { config, theme } from "@/options";
 import { windows_names } from "@/windows";
 const battery = AstalBattery.get_default();
+const isInstalled = typeof DATADIR !== "undefined" && DATADIR !== null;
 
 function Power() {
    return (
@@ -31,7 +32,7 @@ function Reload() {
          focusOnClick={false}
          tooltipText={"Restart shell"}
          onClicked={() => {
-            if (DATADIR !== null) bash(`delta-shell restart`);
+            if (isInstalled) bash(`delta-shell restart`);
             else bash(`ags -i delta-shell quit; ${SRC}/run-dev.sh`);
          }}
       >
