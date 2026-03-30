@@ -17,6 +17,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.astal.follows = "astal_niri";
     };
+
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
     };
