@@ -10,6 +10,18 @@ A desktop shell based on [Ags](https://github.com/Aylur/ags). Currently supports
 
 More information about Delta Shell you can find at [docs website](https://sinomor.github.io/delta-shell-docs/)
 
+### Calendar option
+
+Set `calendar.first-day-of-week` in `~/.config/delta-shell/config.json` to choose the first weekday in the dropdown calendar.
+
+- `0` = Sunday
+- `1` = Monday (default)
+- `2` = Tuesday
+- `3` = Wednesday
+- `4` = Thursday
+- `5` = Friday
+- `6` = Saturday
+
 ## Dependencies
 
 ### Required

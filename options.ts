@@ -184,6 +184,9 @@ export const config = mkOptions(configFile, {
          city: "Minsk" as string | null,
       },
    },
+   calendar: {
+      "first-day-of-week": 1,
+   },
 });
 
 export const theme = mkOptions(themeFile, {

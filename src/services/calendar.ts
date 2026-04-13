@@ -1,4 +1,5 @@
 import GObject, { register, property, getter, setter } from "ags/gobject";
+import { config } from "@/options";
 
 export type CalendarDay = {
    date: Date;
@@ -7,6 +8,10 @@ export type CalendarDay = {
    isWeekend: boolean;
    isOtherMonth: boolean;
 };
+
+function normalizeFirstDayOfWeek(day: number): number {
+   return ((Math.round(day) % 7) + 7) % 7;
+}
 
 @register({ GTypeName: "Calendar" })
 export default class Calendar extends GObject.Object {
@@ -50,9 +55,13 @@ export default class Calendar extends GObject.Object {
       const year = this.year;
       const month = this.month;
       const now = new Date();
+      const firstDayOfWeek = normalizeFirstDayOfWeek(
+         config.calendar["first-day-of-week"],
+      );
 
       const startOfMonth = new Date(year, month, 1);
-      const startDayOfWeek = (startOfMonth.getDay() + 6) % 7;
+      const startDayOfWeek =
+         (startOfMonth.getDay() - firstDayOfWeek + 7) % 7;
 
       const days: CalendarDay[] = [];
 

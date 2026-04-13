@@ -1,11 +1,23 @@
 import { icons } from "@/src/lib/icons";
 import { Gtk } from "ags/gtk4";
 import { createBinding, For } from "ags";
-import { theme } from "@/options";
+import { config, theme } from "@/options";
 import Calendar, { CalendarDay } from "@/src/services/calendar";
 const calendar = Calendar.get_default();
 
-const WEEK_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
+const WEEK_DAYS = [
+   { day: "S", index: 0 },
+   { day: "M", index: 1 },
+   { day: "T", index: 2 },
+   { day: "W", index: 3 },
+   { day: "T", index: 4 },
+   { day: "F", index: 5 },
+   { day: "S", index: 6 },
+];
+
+function normalizeFirstDayOfWeek(day: number): number {
+   return ((Math.round(day) % 7) + 7) % 7;
+}
 
 function CalendarDayButton({ day }: { day: CalendarDay }) {
    const classes = ["calendar-button"];
@@ -26,7 +38,7 @@ function CalendarDayButton({ day }: { day: CalendarDay }) {
 }
 
 function WeekDayHeader({ day, index }: { day: string; index: number }) {
-   const isWeekend = index >= 5;
+   const isWeekend = index === 0 || index === 6;
 
    return (
       <button
@@ -88,6 +100,12 @@ function Header() {
 
 export function CalendarModule() {
    const weeks = createBinding(calendar, "calendar");
+   const firstDayOfWeek = normalizeFirstDayOfWeek(
+      config.calendar["first-day-of-week"],
+   );
+   const orderedWeekDays = WEEK_DAYS.slice(firstDayOfWeek).concat(
+      WEEK_DAYS.slice(0, firstDayOfWeek),
+   );
 
    return (
       <box
@@ -99,7 +117,7 @@ export function CalendarModule() {
       >
          <Header />
          <box class={"weekdays"} spacing={theme.spacing}>
-            {WEEK_DAYS.map((day, index) => (
+            {orderedWeekDays.map(({ day, index }) => (
                <WeekDayHeader day={day} index={index} />
             ))}
          </box>
